@@ -60,7 +60,7 @@ private:
 	
 	// OpenGL widget.
 	GLWidget*				wdgOpenGL;
-	QSize					wdgOpenGLSizeMin = QSize( 800, 600 );
+	QSize					wdgOpenGLSizeMin = QSize( 400, 300 );
 	QSize					wdgOpenGLSizeMax = QSize( 1600, 900 );
 	
 	// Widgets.

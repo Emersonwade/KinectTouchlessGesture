@@ -228,7 +228,7 @@ void GLWidget::paintGL()
 	glPushMatrix();
 		// Toggle reference system.
 		glDisable(GL_BLEND);
-		drawAxis( 2.0f, 5.0f, true );
+		//drawAxis( 2.0f, 5.0f, true );
 		drawGridXZ( 10.0f, 1.0f );
 		// Configure marker points rendering: blending, point size, color.
 		glEnable(GL_BLEND);
