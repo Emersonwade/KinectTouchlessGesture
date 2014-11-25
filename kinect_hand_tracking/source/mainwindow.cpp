@@ -132,7 +132,6 @@ void MainWindow::createPanel() {}
 // ...
 void MainWindow::showPanel() {}
 
-
 // ...
 void MainWindow::hidePanel() {}
 
