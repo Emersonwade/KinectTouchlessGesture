@@ -1,6 +1,3 @@
-
-
-
 #include "mainwindow.h"
 
 #include <windows.h>
@@ -39,11 +36,11 @@ MainWindow::MainWindow()
 	// Configure OpenGL widget timer.
 	tmrOpenGL = new QTimer( (QObject*) wdgOpenGL );
 	QTimer::connect( tmrOpenGL, SIGNAL( timeout() ), (QObject*) wdgOpenGL, SLOT( timerIdle() ) );
-	tmrOpenGL->start(1);
+	tmrOpenGL->start(100);
 	// Configure Mainwindow timer.
-	tmrMainwnd = new QTimer( (QObject*) this );
-	QTimer::connect( tmrMainwnd, SIGNAL( timeout() ), (QObject*) this, SLOT( timerIdle() ) );
-	tmrMainwnd->start(1);
+	//tmrMainwnd = new QTimer( (QObject*) this );
+	//QTimer::connect( tmrMainwnd, SIGNAL( timeout() ), (QObject*) this, SLOT( timerIdle() ) );
+	//tmrMainwnd->start(1);
 	// ...
 	showMaximized();
 	//setWindowState( Qt::WindowMaximized );
