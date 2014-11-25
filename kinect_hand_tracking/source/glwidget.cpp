@@ -19,7 +19,6 @@
 
 #include "glwidget.h"
 
-
 // ...
 void GLWidget::initFonts()
 {
@@ -147,6 +146,9 @@ GLWidget::GLWidget( QWidget* parent ) : QGLWidget( QGLFormat( QGL::DoubleBuffer 
 	makeCurrent();
 	// Init custom fonts.
 	initFonts();
+	
+	depthDataBase = new DepthDataBase();
+	depthDataBase->InitializeDefaultSensor();
 }
 
 
@@ -165,6 +167,7 @@ void GLWidget::toggleDebugInfo() { dbgFlag = !dbgFlag; }
 // ...
 void GLWidget::timerIdle()
 {
+	depthDataBase->Update();
 	// Force repainting.
 	repaint();
 }
@@ -196,15 +199,19 @@ void GLWidget::initializeGL()
 
 
 // ...
-void GLWidget::updateGL() { repaint(); }
+void GLWidget::updateGL() {
+	repaint();
+}
 
 
 // ...
 void GLWidget::paintGL()
 {
+	
 	// Update FPS counter.
 	visFps.add( clock() );
 	
+	glutInitWindowSize(depthDataBase->XResDefault, depthDataBase->YResDefault);
 	// GLWidget mode == GLWidgetMode::NDI_3D.
 	// Clearing buffers.
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -213,11 +220,15 @@ void GLWidget::paintGL()
 	// Projection for viewport 1.
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective( 60.0, (GLfloat) width() / (GLfloat) height(), 0.1, 100.0 );
+	//glOrtho(depthDataBase->XResDefault / 2.0, depthDataBase->XResDefault / 2.0,
+	//	depthDataBase->YResDefault / 2.0, depthDataBase->YResDefault / 2.0, 0.1, 1000.0);
+	gluPerspective( 60.0, (GLfloat) width() / (GLfloat) height(), 0.1, 10000.0 );
 	// Modelview for viewport 1.
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt( 0.5, 0.5, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 );
+	//gluLookAt( 0.5, 0.5, 1000.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 );
+	//为什么变成1000就出问题了
+	gluLookAt(0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 	// User translation.
 	// ...
 	// User rotation.
@@ -225,30 +236,71 @@ void GLWidget::paintGL()
 	// User scaling.
 	// ...
 	// ...
-	glPushMatrix();
-		// Toggle reference system.
-		glDisable(GL_BLEND);
-		//drawAxis( 2.0f, 5.0f, true );
-		drawGridXZ( 10.0f, 1.0f );
-		// Configure marker points rendering: blending, point size, color.
-		glEnable(GL_BLEND);
-	glPopMatrix();
-	// VIEWPORT 2.
-	glViewport( 0, 0, 100, 100 );
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective( 60.0f, 1.0, 1.0f, 5.0f );
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glTranslatef( 0.0f, 0.0f, -2.0f );
-	// Replicate user rotation.
-	// ...
-	// ...
-	// Reference system icon.
-	drawAxis( 1.0f, 2.0f, false );
-	
-	// Draw text info on the screen.
-	drawText();
+	//glPushMatrix();
+	//	// Toggle reference system.
+	//	glDisable(GL_BLEND);
+	//	drawAxis( 2.0f, 5.0f, true );
+	//	drawGridXZ( 10.0f, 1.0f );
+	//	// Configure marker points rendering: blending, point size, color.
+	//	glEnable(GL_BLEND);
+	//glPopMatrix();
+	//// VIEWPORT 2.
+	//glViewport( 0, 0, 100, 100 );
+	//glMatrixMode(GL_PROJECTION);
+	//glLoadIdentity();
+	//gluPerspective( 60.0f, 1.0, 1.0f, 5.0f );
+	//glMatrixMode(GL_MODELVIEW);
+	//glLoadIdentity();
+	//glTranslatef( 0.0f, 0.0f, -2.0f );
+	//// Replicate user rotation.
+	//// ...
+	//// ...
+	//// Reference system icon.
+	//drawAxis( 1.0f, 2.0f, false );
+	//
+	//// Draw text info on the screen.
+	//drawText();
+
+	drawAxis(100.0f, 2.0f, true);
+
+	//glLoadIdentity();
+	//glTranslatef(0.0f, 0.0f, -2.0f);
+
+	glBegin(GL_POINTS);
+
+	list<Point3D*>::iterator i;
+	float minDepth = (float)depthDataBase->minDepth;
+	float maxDepth = (float)depthDataBase->maxDepth;
+	float colorChangeRange = (maxDepth - minDepth) / 3.0f;
+
+
+	for (i = depthDataBase->point3DList.begin(); i != depthDataBase->point3DList.end(); ++i)
+	{
+		Point3D * tempPoint = *i;
+		if (tempPoint->z >= minDepth &&
+			tempPoint->z < minDepth + colorChangeRange)
+		{
+			glColor3f(1.0f, (tempPoint->z - minDepth) / colorChangeRange, 0.0f);
+		}
+		else if (tempPoint->z >= (minDepth + colorChangeRange) &&
+			tempPoint->z < (minDepth + colorChangeRange * 2))
+		{
+			glColor3f(1.0f - (tempPoint->z - (minDepth + colorChangeRange)) / colorChangeRange, 1.0f, 0.0f);
+		}
+		else
+		{
+			glColor3f(0.0f, 1.0f, (tempPoint->z - (minDepth + colorChangeRange * 2)) / colorChangeRange);
+		}
+
+		float zRate = tempPoint->z / minDepth;
+
+		float xPoint = ((GLfloat)tempPoint->x - depthDataBase->XResDefault / 2) * zRate;
+		float yPoint = (-(GLfloat)tempPoint->y + depthDataBase->YResDefault / 2) * zRate;
+
+		glVertex3f(xPoint, yPoint, -(GLfloat)tempPoint->z);
+	}
+	glEnd();
+
 	// Double buffering active by default!
 	// If the grab screenshot flag is on acquire and save a screenshot.
 	grabWidgetScreenshot();

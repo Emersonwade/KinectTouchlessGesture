@@ -1,9 +1,5 @@
-﻿
-
-
-#ifndef GLWIDGET_H
+﻿#ifndef GLWIDGET_H
 #define GLWIDGET_H
-
 
 #include <glew.h>
 #include <freeglut.h>
@@ -21,7 +17,7 @@
 #include <utility>
 
 #include "fps.h"
-
+#include "DepthDataBase.h"
 
 class GLWidget : public QGLWidget
 {
@@ -31,6 +27,8 @@ class GLWidget : public QGLWidget
 public:
 
 private:
+
+	DepthDataBase * depthDataBase;
 
 	// General widget info.
 	FPS				visFps;

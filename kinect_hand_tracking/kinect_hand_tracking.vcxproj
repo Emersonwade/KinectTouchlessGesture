@@ -107,7 +107,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Qt\5.3\msvc2013_opengl\include;C:\Users\Emerson\Documents\lib\freeglut\include\GL;C:\Users\Emerson\Documents\lib\glew\include\GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\Microsoft SDKs\Kinect\v2.0_1409\inc;C:\Qt\5.3\msvc2013_opengl\include;C:\Users\Emerson\Documents\lib\freeglut\include\GL;C:\Users\Emerson\Documents\lib\glew\include\GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_MSVC;QT_DEBUG;QT_LARGEFILE_SUPPORT;QT_DLL;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -118,10 +118,10 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;freeglut.lib;glew32.lib;qt5cored.lib;qt5guid.lib;qt5opengld.lib;qt5widgetsd.lib;qt5networkd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kinect20.lib;opengl32.lib;glu32.lib;freeglut.lib;glew32.lib;qt5cored.lib;qt5guid.lib;qt5opengld.lib;qt5widgetsd.lib;qt5networkd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>C:\Qt\5.3\msvc2013_opengl\lib;C:\Users\Emerson\Documents\lib\glew\lib;C:\Users\Emerson\Documents\lib\freeglut\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Program Files\Microsoft SDKs\Kinect\v2.0_1409\Lib\x86;C:\Qt\5.3\msvc2013_opengl\lib;C:\Users\Emerson\Documents\lib\glew\lib;C:\Users\Emerson\Documents\lib\freeglut\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
@@ -210,16 +210,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\DataBase.cpp" />
+    <ClCompile Include="source\DepthDataBase.cpp" />
     <ClCompile Include="source\glwidget.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\mainwindow.cpp" />
     <ClCompile Include="source\moc_glwidget.cpp" />
     <ClCompile Include="source\moc_mainwindow.cpp" />
+    <ClCompile Include="source\Point3D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\DataBase.h" />
+    <ClInclude Include="source\DepthDataBase.h" />
     <ClInclude Include="source\fps.h" />
     <ClInclude Include="source\glwidget.h" />
     <ClInclude Include="source\mainwindow.h" />
+    <ClInclude Include="source\Point3D.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
